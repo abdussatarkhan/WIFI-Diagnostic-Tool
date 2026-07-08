@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Room — WiFi Diagnostic Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">◈</span>
+    <div class="brand-text">
+      <h1>Signal Room</h1>
+      <p>WiFi diagnostic console</p>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a href="{{ url_for('index') }}" class="topnav-link active">Diagnostics</a>
+    <a href="{{ url_for('presence') }}" class="topnav-link">Presence Watch</a>
+    <a href="{{ url_for('thermal') }}" class="topnav-link">Thermal View</a>
+  </nav>
+  <div class="topbar-status">
+    <span id="conn-dot" class="conn-dot"></span>
+    <span id="conn-label">Connecting…</span>
+    <span class="clock" id="clock"></span>
+  </div>
+</header>
+
+<main class="grid">
+
+  <!-- COMPASS DIAL -->
+  <section class="panel panel-dial">
+    <div class="panel-head">
+      <h2>Signal Bearing</h2>
+      <span class="tag" id="quality-tag">—</span>
+    </div>
+    <div class="dial-wrap">
+      <svg id="dial-svg" viewBox="0 0 320 320" class="dial-svg"></svg>
+      <div class="dial-readout">
+        <div class="dial-percent"><span id="dial-percent-value">--</span><span class="unit">%</span></div>
+        <div class="dial-dbm" id="dial-dbm">-- dBm est.</div>
+        <div class="dial-ssid" id="dial-ssid">Not connected</div>
+      </div>
+    </div>
+    <p class="dial-footnote">Needle sweeps 0→100% signal quality, reported by the Windows WiFi driver.</p>
+  </section>
+
+  <!-- STRIP CHART -->
+  <section class="panel panel-chart">
+    <div class="panel-head">
+      <h2>Signal Trace</h2>
+      <span class="tag tag-muted" id="chart-window">last 6 min</span>
+    </div>
+    <canvas id="strip-chart" class="strip-canvas"></canvas>
+    <div class="chart-legend">
+      <span><i class="dot dot-excellent"></i>Excellent 75–100%</span>
+      <span><i class="dot dot-good"></i>Good 50–74%</span>
+      <span><i class="dot dot-fair"></i>Fair 25–49%</span>
+      <span><i class="dot dot-poor"></i>Poor 0–24%</span>
+    </div>
+  </section>
+
+  <!-- CONNECTION DETAILS -->
+  <section class="panel panel-details">
+    <div class="panel-head">
+      <h2>Link Detail</h2>
+    </div>
+    <dl class="detail-grid" id="detail-grid">
+      <div><dt>SSID</dt><dd id="d-ssid">—</dd></div>
+      <div><dt>BSSID</dt><dd id="d-bssid">—</dd></div>
+      <div><dt>Radio type</dt><dd id="d-radio">—</dd></div>
+      <div><dt>Channel</dt><dd id="d-channel">—</dd></div>
+      <div><dt>Authentication</dt><dd id="d-auth">—</dd></div>
+      <div><dt>Cipher</dt><dd id="d-cipher">—</dd></div>
+      <div><dt>Receive rate</dt><dd id="d-rx">—</dd></div>
+      <div><dt>Transmit rate</dt><dd id="d-tx">—</dd></div>
+    </dl>
+    <div class="error-banner" id="error-banner" hidden></div>
+  </section>
+
+  <!-- SPEED TEST -->
+  <section class="panel panel-speed">
+    <div class="panel-head">
+      <h2>Throughput Check</h2>
+      <button id="speed-btn" class="btn">Run speed test</button>
+    </div>
+    <div class="speed-gauges">
+      <div class="speed-gauge">
+        <div class="speed-value" id="speed-download">--</div>
+        <div class="speed-label">Mbps ↓ down</div>
+      </div>
+      <div class="speed-gauge">
+        <div class="speed-value" id="speed-upload">--</div>
+        <div class="speed-label">Mbps ↑ up</div>
+      </div>
+      <div class="speed-gauge">
+        <div class="speed-value" id="speed-ping">--</div>
+        <div class="speed-label">ms ping</div>
+      </div>
+    </div>
+    <div class="speed-status" id="speed-status">Idle. Run a test to measure real throughput to the nearest server.</div>
+    <div class="speed-meta" id="speed-meta"></div>
+  </section>
+
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

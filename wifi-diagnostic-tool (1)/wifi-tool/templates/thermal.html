@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thermal View — Signal Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">◈</span>
+    <div class="brand-text">
+      <h1>Signal Room</h1>
+      <p>Thermal view</p>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a href="{{ url_for('index') }}" class="topnav-link">Diagnostics</a>
+    <a href="{{ url_for('presence') }}" class="topnav-link">Presence Watch</a>
+    <a href="{{ url_for('thermal') }}" class="topnav-link active">Thermal View</a>
+  </nav>
+  <div class="topbar-status">
+    <span id="conn-dot" class="conn-dot"></span>
+    <span id="conn-label">Connecting…</span>
+    <span class="clock" id="clock"></span>
+  </div>
+</header>
+
+<main class="grid thermal-grid">
+
+  <!-- THERMAL CAMERA VIEW -->
+  <section class="panel panel-thermalcam">
+    <div class="panel-head">
+      <h2 id="thermal-panel-title">Human Detector</h2>
+      <span class="mode-switch">
+        <span class="tag motion-badge" id="thermal-tag">—</span>
+        <button id="thermal-stop-btn" class="btn btn-mini" title="Stop and choose a different mode">Switch mode</button>
+      </span>
+    </div>
+    <div class="thermal-stage">
+      <video id="cam-video" playsinline autoplay muted style="display:none"></video>
+      <canvas id="thermal-canvas"></canvas>
+
+      <div class="thermal-readout thermal-ambient" id="thermal-ambient">--.-°C</div>
+      <div class="thermal-scalebar">
+        <div class="scalebar-gradient"></div>
+        <div class="scalebar-labels">
+          <span id="scale-max">Hot</span>
+          <span id="scale-min">Cold</span>
+        </div>
+      </div>
+
+      <div class="thermal-range-banner" id="thermal-range-banner" style="display:none;"></div>
+
+      <div class="thermal-start-overlay" id="thermal-start-overlay">
+        <p>Choose a detector mode. Camera mode uses your device camera and an on-device AI model. WiFi Radar mode uses no camera at all — it re-purposes live WiFi signal volatility into a rotating radar-style sweep, so it reads the same in full daylight or total darkness.</p>
+        <div class="mode-buttons">
+          <button id="thermal-start-btn" class="btn">Start camera feed</button>
+          <button id="thermal-wifi-btn" class="btn btn-alt">Start WiFi radar mode (no camera)</button>
+        </div>
+      </div>
+    </div>
+    <p class="thermal-footnote" id="thermal-footnote">Live camera feed rendered through a false-color thermal palette, with an on-device AI model boxing detected people — styled like a FLIR "human motion" camera. The detection overlay only arms while your WiFi signal shows you're in range; step outside coverage and it disarms.</p>
+  </section>
+
+  <!-- READOUT PANEL -->
+  <section class="panel panel-thermalinfo">
+    <div class="panel-head">
+      <h2>Detection Readout</h2>
+    </div>
+    <div class="motion-readout">
+      <div class="motion-score"><span id="thermal-temp-value">--</span><span class="unit" id="thermal-temp-unit">humans in frame</span></div>
+      <div class="motion-label" id="thermal-label">Detector off</div>
+      <div class="motion-bar-track">
+        <div class="motion-bar-fill" id="thermal-bar-fill"></div>
+      </div>
+    </div>
+    <p class="motion-sub">
+      WiFi signal <span id="thermal-score">--</span>% · band <span id="thermal-mean">--</span> ·
+      est. coverage <span id="thermal-samples">--</span>
+    </p>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="panel panel-thermalabout">
+    <div class="panel-head">
+      <h2>How This Works</h2>
+    </div>
+    <ul class="about-list">
+      <li><strong>Camera mode — real camera, styled false-color:</strong> your webcam feed is converted to grayscale luminance, then remapped through a thermal color ramp (deep blue → orange → white) frame by frame, with a small on-device model (TensorFlow.js + COCO-SSD) boxing detected people. Everything runs locally in your browser, no frames are sent anywhere. Like any visible-light camera, it needs enough ambient light to see by.</li>
+      <li><strong>WiFi Radar mode — no camera, works day or night:</strong> this reuses the exact same heuristic as Presence Watch — a background scan (<code>netsh wlan show networks mode=bssid</code>, via <code>/api/presence</code>) reads a live 0–100% signal-quality figure for every router/access point currently visible nearby, not just the one your laptop is connected to. A person moving through the space tends to add volatility to those readings that a static, empty room doesn't. Because it never touches a camera or ambient light, it reads identically in full daylight or total darkness. It renders as a rotating radar sweep (like an aircraft/ship PPI scope) with 0–2 glowing "contacts" that light up as the beam passes — but their bearing/range is a smooth illustrative drift, and whether they appear at all comes only from the single aggregated motion score, not a real position fix. A signal-quality heuristic can tell you "something's moving nearby," not a measured bearing, range, or headcount — the canvas says so directly.</li>
+      <li><strong>"In range" / signal gating:</strong> both modes reuse the live WiFi signal from Diagnostics. Camera mode arms/disarms on it; WiFi Radar mode simply needs an active connection to have anything to measure.</li>
+    </ul>
+    <div class="caveat-box">
+      Neither mode is real detection hardware. Camera mode's "range" is a stylistic gate driven by signal quality (%), not a real measurement of distance. WiFi Radar mode is the same coarse, multi-router signal-quality heuristic described in the README (see Notes &amp; limitations), styled to look like a radar scope — it is not a true RF-imaging or WiFi-CSI radar, which needs directional/phased antenna arrays and channel-state access this tool doesn't have. Treat both as a themed, experimental dashboard, not a security or safety device.
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+<script src="{{ url_for('static', filename='thermal.js') }}"></script>
+</body>
+</html>

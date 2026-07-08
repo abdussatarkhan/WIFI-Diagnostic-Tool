@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presence Watch — Signal Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">◈</span>
+    <div class="brand-text">
+      <h1>Signal Room</h1>
+      <p>Presence watch</p>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a href="{{ url_for('index') }}" class="topnav-link">Diagnostics</a>
+    <a href="{{ url_for('presence') }}" class="topnav-link active">Presence Watch</a>
+    <a href="{{ url_for('thermal') }}" class="topnav-link">Thermal View</a>
+  </nav>
+  <div class="topbar-status">
+    <span id="conn-dot" class="conn-dot"></span>
+    <span id="conn-label">Connecting…</span>
+    <span class="clock" id="clock"></span>
+  </div>
+</header>
+
+<main class="grid">
+
+  <!-- MOTION GAUGE -->
+  <section class="panel panel-motion">
+    <div class="panel-head">
+      <h2>Motion Score</h2>
+      <span class="tag motion-badge" id="motion-tag">—</span>
+    </div>
+    <div class="motion-readout">
+      <div class="motion-score"><span id="motion-score-value">--</span><span class="unit">/100</span></div>
+      <div class="motion-label" id="motion-label">Scanning for nearby routers…</div>
+      <div class="motion-bar-track">
+        <div class="motion-bar-fill" id="motion-bar-fill"></div>
+      </div>
+    </div>
+    <p class="motion-sub">
+      Built from <span id="motion-samples">--</span> visible routers ·
+      avg signal <span id="motion-mean">--</span>% ·
+      trend <span id="motion-trend">steady</span>
+    </p>
+  </section>
+
+  <!-- VOLATILITY CHART -->
+  <section class="panel panel-volatility">
+    <div class="panel-head">
+      <h2>Signal Volatility (avg. across routers)</h2>
+      <span class="tag tag-muted" id="volatility-window">rolling window</span>
+    </div>
+    <canvas id="volatility-chart" class="strip-canvas"></canvas>
+    <div class="volatility-legend">
+      <span><i class="dot dot-stdev"></i>Std. deviation</span>
+      <span><i class="dot dot-jitter"></i>Sample-to-sample jitter</span>
+    </div>
+  </section>
+
+  <!-- VISIBLE ROUTERS -->
+  <section class="panel panel-routers">
+    <div class="panel-head">
+      <h2>Visible Routers</h2>
+      <span class="tag tag-muted" id="router-count-tag">0 found</span>
+    </div>
+    <table class="router-table">
+      <thead>
+        <tr><th>SSID</th><th>BSSID</th><th>Signal</th><th>Score</th></tr>
+      </thead>
+      <tbody id="router-table-body">
+        <tr><td colspan="4" class="router-table-empty">Scanning…</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ABOUT / HOW IT WORKS -->
+  <section class="panel panel-about">
+    <div class="panel-head">
+      <h2>How This Works</h2>
+    </div>
+    <ul class="about-list">
+      <li><strong>Idea:</strong> a person moving through the space disturbs the radio path to nearby routers/access points, which shows up as extra volatility in each one's reported signal quality — the same principle behind WiFi/RF "device-free" sensing.</li>
+      <li><strong>Signal used:</strong> this deliberately does <em>not</em> use your laptop's own link quality to its connected router. A background scan (<code>netsh wlan show networks mode=bssid</code>) runs every few seconds and reads a live signal-quality figure for <em>every</em> router/AP currently broadcasting nearby — yours and any visible neighbors. Motion sensing takes the standard deviation and jitter of each router's recent readings, then averages across all of them.</li>
+      <li><strong>Best results:</strong> keep the laptop/adapter stationary, sit still for a baseline reading, then walk through the room to see the score react. More visible routers generally means a more stable reading.</li>
+    </ul>
+    <div class="caveat-box">
+      This reads only the coarse 0–100% quality figure Windows exposes per
+      router via <code>netsh</code> — not raw channel state (CSI). It's a
+      fun, low-cost experiment, not a calibrated sensor: other WiFi traffic,
+      moving devices, microwaves, and even weather can shift the score, and
+      it can't count, locate, or identify anyone. Don't rely on it for
+      security or safety decisions.
+    </div>
+  </section>
+
+  <!-- SENSITIVITY CONTROL -->
+  <section class="panel panel-controls">
+    <div class="panel-head">
+      <h2>Sensitivity</h2>
+    </div>
+    <div class="sensitivity-row">
+      <label for="sensitivity-slider">Less sensitive</label>
+      <input type="range" id="sensitivity-slider" min="0.5" max="2" step="0.1" value="1">
+      <label for="sensitivity-slider">More sensitive</label>
+      <span class="sensitivity-value" id="sensitivity-value">1.0×</span>
+    </div>
+    <div class="error-banner" id="error-banner" hidden></div>
+  </section>
+
+</main>
+
+<script src="{{ url_for('static', filename='presence.js') }}"></script>
+</body>
+</html>
