@@ -1,7 +1,7 @@
 # WiFi Network Diagnostic & Experimental RF Presence Tool
 
 [![Python](https://img.shields.io/badge/Python-Flask_Backend-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/) [![Networking](https://img.shields.io/badge/Networking-802.11_WLAN-00A8E8?style=for-the-badge&logo=wi-fi&logoColor=white)](https://www.wi-fi.org/) [![Windows](https://img.shields.io/badge/Windows-netsh_Integration-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://learn.microsoft.com/)
-[![Author](https://img.shields.io/badge/Author-Abdussatar-E50914?style=for-the-badge&logo=github&logoColor=white)](https://github.com/satarabdus692-bot)
+[![Author](https://img.shields.io/badge/Author-Abdussatar-E50914?style=for-the-badge&logo=github&logoColor=white)](https://github.com/abdussatarkhan)
 
 > **A network telemetry and diagnostics web dashboard built in Flask that communicates directly with Windows `netsh` system subroutines to provide live signal RSSI telemetry, BSSID channel congestion mapping, speed testing, and experimental RF-based presence detection.**
 
@@ -33,7 +33,7 @@ graph TD
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/satarabdus692-bot/WIFI-Diagnostic-Tool.git
+git clone https://github.com/abdussatarkhan/WIFI-Diagnostic-Tool.git
 cd WIFI-Diagnostic-Tool
 ```
 
@@ -51,8 +51,8 @@ pip install -r requirements.txt
 
 ## 👨‍💻 Author & Profile
 
-Built and maintained by **Abdussatar** ([@satarabdus692-bot](https://github.com/satarabdus692-bot)).  
-For technical discussions, collaboration, or queries, feel free to reach out via [LinkedIn](https://www.linkedin.com/in/abdus-satar-5150813b5/) or [GitHub](https://github.com/satarabdus692-bot).
+Built and maintained by **Abdussatar** ([@abdussatarkhan](https://github.com/abdussatarkhan)).  
+For technical discussions, collaboration, or queries, feel free to reach out via [LinkedIn](https://www.linkedin.com/in/abdus-satar-5150813b5/) or [GitHub](https://github.com/abdussatarkhan).
 
 ---
 
