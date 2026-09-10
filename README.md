@@ -1,5 +1,6 @@
 # WiFi Network Diagnostic & Experimental RF Presence Tool
 
+[![CI](https://github.com/abdussatarkhan/WIFI-Diagnostic-Tool/actions/workflows/ci.yml/badge.svg)](https://github.com/abdussatarkhan/WIFI-Diagnostic-Tool/actions)
 [![Python](https://img.shields.io/badge/Python-Flask_Backend-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/) [![Networking](https://img.shields.io/badge/Networking-802.11_WLAN-00A8E8?style=for-the-badge&logo=wi-fi&logoColor=white)](https://www.wi-fi.org/) [![Windows](https://img.shields.io/badge/Windows-netsh_Integration-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://learn.microsoft.com/)
 [![Author](https://img.shields.io/badge/Author-Abdussatar-E50914?style=for-the-badge&logo=github&logoColor=white)](https://github.com/abdussatarkhan)
 
@@ -46,6 +47,16 @@ source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 # Install dependencies (if requirements.txt exists)
 pip install -r requirements.txt
 ```
+
+---
+
+## 🗺️ Roadmap & Upcoming Features
+
+- [x] Windows netsh integration for real-time 802.11 signal metrics
+- [x] Experimental RF presence and motion disturbance detection
+- [ ] Channel interference and frequency congestion visualizer
+- [ ] Automated internet speed test scheduler
+- [ ] Network rogue AP security scanner
 
 ---
 
