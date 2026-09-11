@@ -69,6 +69,21 @@ pip install -r requirements.txt
 
 ---
 
+
+
+## 🖥️ Application & Dashboard Interface
+
+This repository includes an interactive operational dashboard and management console ([`dashboard.html`](dashboard.html)) with live simulated telemetry.
+
+<p align="center">
+  <img src="screenshots/01_dashboard_preview.png" alt="NetPulse: WiFi Signal Strength & Spectrum Diagnostics Preview" width="95%" />
+</p>
+
+> [!TIP]
+> Double-click [`dashboard.html`](dashboard.html) to open the interactive interface locally in any modern browser with zero server dependencies.
+
+---
+
 ## 👨‍💻 Author & Profile
 
 Built and maintained by **Abdussatar** ([@abdussatarkhan](https://github.com/abdussatarkhan)).  
